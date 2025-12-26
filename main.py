@@ -11,8 +11,8 @@ app = FastAPI()
 # Configuración de la base de datos
 MYSQL_HOST = "mysql"
 MYSQL_PORT = "3306"
-MYSQL_USER = "user"
-MYSQL_PASSWORD = "userpassword"
+MYSQL_USER = "adsa"
+MYSQL_PASSWORD = "2006"
 MYSQL_DB = "test_db"
 
 # Crear la cadena de conexión
