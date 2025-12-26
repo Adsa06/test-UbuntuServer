@@ -17,7 +17,7 @@ class User(BaseModel):
     id: int
     username: str
     email: str
-    created_at: str
+    created_at: datetime
 
 # Función para conectar a la base de datos
 def get_db_connection():
