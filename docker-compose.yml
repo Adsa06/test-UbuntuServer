@@ -1,0 +1,40 @@
+version: '3.9'  # La última versión estable disponible
+
+services:
+  mysql:
+    image: mysql:9.5  # Usamos la imagen oficial de MySQL 9.5
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: 2006  # Contraseña para el usuario root
+      MYSQL_DATABASE: test_db           # Base de datos por defecto que se crea
+      MYSQL_USER: adsa                  # Nombre de usuario para la base de datos
+      MYSQL_PASSWORD: 2006      # Contraseña para el usuario de la base de datos
+    ports:
+      - "3306:3306"                      # Exponer el puerto 3306 para MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql        # Volumen persistente para los datos de MySQL
+    networks:
+      - fastapi-network                  # Conectar a la red de FastAPI
+  
+  fastapi:
+    build: .                             # Construye la imagen de FastAPI desde el Dockerfile en el directorio actual
+    container_name: fastapi-container
+    depends_on:
+      - mysql                            # Asegura que MySQL se inicie antes de FastAPI
+    ports:
+      - "8000:8000"                      # Exponer el puerto 8000 para la aplicación FastAPI
+    environment:
+      MYSQL_HOST: mysql                  # Nombre del servicio MySQL
+      MYSQL_PORT: 3306                   # Puerto de MySQL
+      MYSQL_USER: adsa                   # Usuario de la base de datos
+      MYSQL_PASSWORD: 2006       # Contraseña de la base de datos
+      MYSQL_DB: test_db                  # Nombre de la base de datos
+    networks:
+      - fastapi-network                  # Conectar a la misma red de FastAPI
+  
+networks:
+  fastapi-network:                      # Definir una red personalizada para los contenedores
+    driver: bridge
+
+volumes:
+  mysql_data:                           # Volumen persistente para los datos de MySQL
