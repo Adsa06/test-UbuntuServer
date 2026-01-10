@@ -16,26 +16,17 @@ services:
     depends_on:
       - db
 
-  frontend:
-    build: ./frontend
-    expose:
-      - "80"
-
   nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
     ports:
       - "8080:80"
     depends_on:
       - backend
-      - frontend
-  
+
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
     command: tunnel --url http://nginx:80
     depends_on:
       - nginx
-    networks:
-      - default
