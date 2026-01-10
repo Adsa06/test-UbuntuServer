@@ -7,10 +7,10 @@ from datetime import datetime
 app = FastAPI()
 
 # Configuración de la base de datos
-MYSQL_HOST = "mysql"
+MYSQL_HOST = "db"
 MYSQL_PORT = 3306
-MYSQL_USER = "adsa"
-MYSQL_PASSWORD = "2006"
+MYSQL_USER = "user"
+MYSQL_PASSWORD = "password"
 MYSQL_DB = "test_db"
 
 # Definir el modelo de los usuarios
