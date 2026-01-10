@@ -1,40 +1,59 @@
-version: '3.9'  # La última versión estable disponible
+version: "3.9"
 
 services:
-  mysql:
-    image: mysql:9.5  # Usamos la imagen oficial de MySQL 9.5
-    container_name: mysql-container
+  db:
+    image: mysql:8.0
+    container_name: my_db
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 2006  # Contraseña para el usuario root
-      MYSQL_DATABASE: test_db           # Base de datos por defecto que se crea
-      MYSQL_USER: adsa                  # Nombre de usuario para la base de datos
-      MYSQL_PASSWORD: 2006      # Contraseña para el usuario de la base de datos
-    ports:
-      - "3306:3306"                      # Exponer el puerto 3306 para MySQL
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     volumes:
-      - mysql_data:/var/lib/mysql        # Volumen persistente para los datos de MySQL
-    networks:
-      - fastapi-network                  # Conectar a la red de FastAPI
-  
-  fastapi:
-    build: .                             # Construye la imagen de FastAPI desde el Dockerfile en el directorio actual
-    container_name: fastapi-container
-    depends_on:
-      - mysql                            # Asegura que MySQL se inicie antes de FastAPI
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "8000:8000"                      # Exponer el puerto 8000 para la aplicación FastAPI
-    environment:
-      MYSQL_HOST: mysql                  # Nombre del servicio MySQL
-      MYSQL_PORT: 3306                   # Puerto de MySQL
-      MYSQL_USER: adsa                   # Usuario de la base de datos
-      MYSQL_PASSWORD: 2006       # Contraseña de la base de datos
-      MYSQL_DB: test_db                  # Nombre de la base de datos
-    networks:
-      - fastapi-network                  # Conectar a la misma red de FastAPI
-  
-networks:
-  fastapi-network:                      # Definir una red personalizada para los contenedores
-    driver: bridge
+      - "3306:3306"
 
-volumes:
-  mysql_data:                           # Volumen persistente para los datos de MySQL
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_NAME: mydb
+      DB_USER: user
+      DB_PASSWORD: password
+    depends_on:
+      - db
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  cloudflared:
+    image: cloudflare/cloudflared
+    container_name: cloudflared
+    command: tunnel --url http://nginx:80
+    depends_on:
+      - nginx
+    volumes:
+      - ./cloudflared:/etc/cloudflared
