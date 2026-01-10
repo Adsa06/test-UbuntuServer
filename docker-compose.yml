@@ -30,3 +30,12 @@ services:
     depends_on:
       - backend
       - frontend
+  
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel --url http://nginx:80
+    depends_on:
+      - nginx
+    networks:
+      - default
