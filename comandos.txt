@@ -1,0 +1,42 @@
+Arrancar los contenedores (sin rebuild)
+
+docker compose up -d
+
+Elimina los contenedores los contenedores (sin perder datos)
+
+docker compose down
+
+Comandos que NO debes usar (si no quieres perder datos)
+
+docker compose down -v
+
+Borra volúmenes
+Borra MySQL
+Reejecuta init.sql
+Pierdes datos
+
+Apagar los contenedores (SIN borrar nada)
+
+docker compose stop
+
+Volver a encenderlos
+
+docker compose start
+
+
+Para poder ejecutar script
+
+chmod +x script.sh
+sudo ./script.sh
+
+o otra opción es
+
+bash script.sh
+
+
+Después del reinicio
+
+Comprueba:
+docker run hello-world
+docker compose versión
+Si funciona sin sudo, está perfecto
