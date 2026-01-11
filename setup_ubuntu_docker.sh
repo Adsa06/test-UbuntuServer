@@ -42,7 +42,8 @@ apt install -y \
   nano \
   htop \
   unzip \
-  ufw
+  ufw \
+  openssh-server
 
 echo "Activando SSH..."
 systemctl enable ssh
