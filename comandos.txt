@@ -40,3 +40,10 @@ Comprueba:
 docker run hello-world
 docker compose versión
 Si funciona sin sudo, está perfecto
+
+
+Comandos para instalar git
+sudo apt update
+sudo apt install git -y
+
+

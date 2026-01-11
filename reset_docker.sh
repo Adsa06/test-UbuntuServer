@@ -20,4 +20,4 @@ echo "Proyecto levantado correctamente!"
 echo "Verifica los contenedores activos con: docker compose ps"
 
 echo "Lanzando Cloudflare Tunnel temporal..."
-docker compose run --rm cloudflared
+docker compose up -d cloudflared

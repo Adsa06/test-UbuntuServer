@@ -27,6 +27,8 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    command: tunnel --url http://nginx:80
+    command: tunnel --url http://nginx:80 --no-autoupdate
     depends_on:
       - nginx
+    networks:
+      - default
